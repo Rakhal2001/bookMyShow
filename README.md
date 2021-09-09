@@ -5,7 +5,7 @@ BookMyHoliday is looking to build a platform that gives its customers a holistic
 
 Proxy Endpoint URL: http://bms-main-api.us-e2.cloudhub.io
 
-## Operation
+## Operations
 
 ⋅⋅* Get Available Movies: [GET /movies](http://bms-main-api.us-e2.cloudhub.io/movies)
       Accepts Query Parameter to filter movies based on *name, genre, language*
