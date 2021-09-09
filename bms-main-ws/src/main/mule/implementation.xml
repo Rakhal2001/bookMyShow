@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:bookmyshow="http://www.mulesoft.org/schema/mule/bookmyshow" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/bookmyshow http://www.mulesoft.org/schema/mule/bookmyshow/current/mule-bookmyshow.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="eb76b0d2-4848-4017-a576-3c17fa083d45" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="getOrders" doc:id="a40d6aa8-40c8-4309-bce2-76e7bcbcc237" >
+		<choice doc:name="Choice" doc:id="9110207c-f200-4369-8132-8a0a02dc448d">
+					<when expression="#[attributes.queryParams.email != null]">
+						<ee:transform doc:name="Transform Message" doc:id="e89934a7-bd29-44bc-8973-dc464125a701">
+							<ee:message>
+								<ee:set-payload><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://www.example.org/OrderService/
+---
+{
+	ns0#GetOrdersByEmail: {
+		email: attributes.queryParams.email
+	}
+}]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+						<wsc:consume operation="GetOrdersByEmail" doc:name="Consume" doc:id="49abb01f-8ff3-4465-985e-9a4a7846d732" config-ref="Web_Service_Consumer_Config" />
+					</when>
+					<when expression="#[attributes.queryParams.movie != null]">
+						<ee:transform doc:name="Transform Message" doc:id="e3dde3c5-e58e-4fc6-9383-ceafee1ad9a0">
+							<ee:message>
+								<ee:set-payload><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://www.example.org/OrderService/
+---
+{
+	ns0#GetOrdersByMovie: {
+		movieName: attributes.queryParams.movie
+	}
+}]]></ee:set-payload>
+							</ee:message>
+						</ee:transform>
+				<wsc:consume operation="GetOrdersByMovie" doc:name="Consume" doc:id="86a2cad0-700a-4a08-8267-b8590a672c85" config-ref="Web_Service_Consumer_Config" />
+					</when>
+					<otherwise>
+						<ee:transform doc:name="Transform Message" doc:id="1e5ef484-0a71-4962-aa1f-505c57d71d04">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://www.example.org/OrderService/
+---
+{
+	ns0#GetAllOrders: {
+		
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+						<wsc:consume doc:name="Consume" doc:id="63a1d836-fb1d-499c-b737-3c7850d7ce75" config-ref="Web_Service_Consumer_Config" operation="GetAllOrders" />
+					</otherwise>
+				</choice>
+		<logger level="INFO" doc:name="Logger" doc:id="5a1d26b8-ebc4-4d5c-8385-3afa96844828" message="#[payload]" />
+	</flow>
+	<flow name="getOrdersById" doc:id="dd0625a2-e304-4fd5-9862-0ca5715beedd" >
+		<ee:transform doc:name="Transform Message" doc:id="28c6ee26-b2f0-4da5-a30b-a04e60cf61ff" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://www.example.org/OrderService/
+---
+{
+	ns0#GetOrdersById: {
+		id: attributes.uriParams.id
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<wsc:consume operation="GetOrdersById" doc:name="Consume" doc:id="e298e5f7-f94b-4355-b285-18224f7c20d1" config-ref="Web_Service_Consumer_Config"/>
+		<logger level="INFO" doc:name="Logger" doc:id="6b0c2e15-ec3b-43cb-ac7f-4897f441de2e" message="#[payload]"/>
+	</flow>
+	<flow name="bookOrder" doc:id="9886a61a-739f-44ca-9d39-c624d989058f" >
+		<ee:transform doc:name="Transform Message" doc:id="c45064a7-f034-429f-b0ef-c078d49cd0da" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://www.example.org/OrderService/
+---
+{
+	ns0#BookOrders: {
+		customerName: payload.customerName,
+		email: payload.email,
+		movieId: payload.movieId,
+		bookedSeats: payload.bookedSeats
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<wsc:consume operation="BookOrders" doc:name="Consume" doc:id="e594aec0-4e9c-4904-8d6f-068f2c19ba5c" config-ref="Web_Service_Consumer_Config"/>
+		<logger level="INFO" doc:name="Logger" doc:id="51d694dd-3d6b-42ee-b2f5-e52eff57157d" />
+	</flow>
+	<flow name="deleteOrder" doc:id="25c7fb7e-2b15-4712-b5f0-8b205dc6cfd8" >
+		<ee:transform doc:name="Transform Message" doc:id="9e1f187e-4611-4e98-a576-e6c2601300a1" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://www.example.org/OrderService/
+---
+{
+	ns0#DeleteOrders: {
+		id: attributes.uriParams.id
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<wsc:consume operation="DeleteOrders" doc:name="Consume" doc:id="6692ca04-7a08-4110-9c4c-ef393ebadcc2" config-ref="Web_Service_Consumer_Config"/>
+		<logger level="INFO" doc:name="Logger" doc:id="9a907e76-4b14-49ba-9c52-b4da09119e75" />
+	</flow>
+	<flow name="createMovie" doc:id="c23d7d6b-bda6-49f8-a0f2-eaaab511b10f" >
+		<bookmyshow:create-movie doc:name="Create movie" doc:id="4eaeb543-bc88-4381-ae69-da21b00866b7" config-ref="Bookmyshow_Config" client-id='#[attributes.headers."client_id"]' client-secret='#[attributes.headers."client_secret"]'/>
+		<logger level="INFO" doc:name="Logger" doc:id="44cf3227-bfd1-4fe6-898f-56af195d0c18" />
+	</flow>
+	<flow name="getMovies" doc:id="ded6ab50-ee04-427c-a976-c140b4dbc73d" >
+		<bookmyshow:get-movies doc:name="Get movies" doc:id="c2356025-4791-421a-a21c-97864b4afbf4" config-ref="Bookmyshow_Config" client-id='#[attributes.headers."client_id"]' client-secret='#[attributes.headers."client_secret"]' sc-name="#[attributes.queryParams.name]" genre="#[attributes.queryParams.genre]" language="#[attributes.queryParams.language]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="5a2c5b31-440f-4635-9b92-58577b23908e" />
+	</flow>
+	<flow name="getMoviesByID" doc:id="07b0f522-51cf-4d0c-8527-b761417a92a1" >
+		<bookmyshow:get-movie-by-id doc:name="Get movie by id" doc:id="b2904608-3d90-4f6f-a58b-592c7aa4f12b" config-ref="Bookmyshow_Config" id="#[attributes.uriParams.id]" client-id='#[attributes.headers."client_id"]' client-secret='#[attributes.headers."client_secret"]'/>
+		<logger level="INFO" doc:name="Logger" doc:id="3042b688-9a2f-48ab-91b5-c23f5802d4a3" />
+	</flow>
+	<flow name="deleteMovies" doc:id="47b1adee-a3f0-451f-8543-8a6ff3227487" >
+		<bookmyshow:delete-movie-by-id doc:name="Delete movie by id" doc:id="32017181-451d-4b0b-81fb-0918142d5e8b" config-ref="Bookmyshow_Config" id="#[attributes.uriParams.id]" client-id='#[attributes.headers."client_id"]' client-secret='#[attributes.headers."client_secret"]'/>
+		<logger level="INFO" doc:name="Logger" doc:id="00875480-6370-4945-917a-5e229768f23e" />
+	</flow>
+</mule>

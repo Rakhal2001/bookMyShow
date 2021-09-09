@@ -1,0 +1,17 @@
+%dw 2.0
+
+type auto_9886a61a_739f_44ca_9d39_c624d989058f_Output_Payload = {
+  ticket: {
+    schedule: String, 
+    totalAmount: Number, 
+    bookedOn: String, 
+    movieDuration: Number, 
+    movieName: String, 
+    customerName: String, 
+    email: String, 
+    bookedSeats: Number, 
+    _?: Any
+  }, 
+  _?: Any
+}
+

@@ -1,0 +1,12 @@
+http:
+  port: "8081"
+  
+movies:
+  host: "bms-movies-api.us-e2.cloudhub.io"
+  port: "80"
+  basepath: "/"
+  clientId: "7b0f1e50d0b4494da97a42abd2452bba"
+  clientSecret: "7E4b948928044f888E032A6459166B11"
+  
+orders:
+  location: "http://bms-orders-ws.us-e2.cloudhub.io/OrderService/OrderServiceSOAP?wsdl"

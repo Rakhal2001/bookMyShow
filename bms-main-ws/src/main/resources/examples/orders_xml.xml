@@ -1,0 +1,74 @@
+<body>
+  <ns0:GetAllOrdersResponse xmlns:ns0="http://www.example.org/OrderService/">
+    <order>
+      <orderId>1</orderId>
+      <customerName>Abhishek Saseendran</customerName>
+      <email>abhishek@apisero.com</email>
+      <movieId>1</movieId>
+      <movieName>Take a Giant Step</movieName>
+      <bookedOn>2021-09-03T03:23:06</bookedOn>
+      <bookedSeats>3</bookedSeats>
+      <totalAmount>500</totalAmount>
+    </order>
+    <order>
+      <orderId>2</orderId>
+      <customerName>Abhishek</customerName>
+      <email>abhishek2@apisero.com</email>
+      <movieId>1</movieId>
+      <movieName>Take a Giant Step</movieName>
+      <bookedOn>2021-09-08T10:01:07</bookedOn>
+      <bookedSeats>2</bookedSeats>
+      <totalAmount>80</totalAmount>
+    </order>
+    <order>
+      <orderId>3</orderId>
+      <customerName>Abhishek3</customerName>
+      <email>abhishek3@apisero.com</email>
+      <movieId>3</movieId>
+      <movieName>Dark Portals: The Chronicles of Vidocq  (Vidocq)</movieName>
+      <bookedOn>2021-09-08T10:08:25</bookedOn>
+      <bookedSeats>2</bookedSeats>
+      <totalAmount>80</totalAmount>
+    </order>
+    <order>
+      <orderId>4</orderId>
+      <customerName>Abhishek3</customerName>
+      <email>abhishek3@apisero.com</email>
+      <movieId>3</movieId>
+      <movieName>Dark Portals: The Chronicles of Vidocq  (Vidocq)</movieName>
+      <bookedOn>2021-09-08T10:11:31</bookedOn>
+      <bookedSeats>2</bookedSeats>
+      <totalAmount>80</totalAmount>
+    </order>
+    <order>
+      <orderId>5</orderId>
+      <customerName>Abhishek3</customerName>
+      <email>abhishek3@apisero.com</email>
+      <movieId>3</movieId>
+      <movieName>Dark Portals: The Chronicles of Vidocq  (Vidocq)</movieName>
+      <bookedOn>2021-09-08T10:12:21</bookedOn>
+      <bookedSeats>2</bookedSeats>
+      <totalAmount>80</totalAmount>
+    </order>
+    <order>
+      <orderId>6</orderId>
+      <customerName>Abhishek3</customerName>
+      <email>abhishek3@apisero.com</email>
+      <movieId>3</movieId>
+      <movieName>Dark Portals: The Chronicles of Vidocq  (Vidocq)</movieName>
+      <bookedOn>2021-09-08T10:15:35</bookedOn>
+      <bookedSeats>2</bookedSeats>
+      <totalAmount>80</totalAmount>
+    </order>
+    <order>
+      <orderId>7</orderId>
+      <customerName>Abhishek3</customerName>
+      <email>abhishek3@apisero.com</email>
+      <movieId>3</movieId>
+      <movieName>Dark Portals: The Chronicles of Vidocq  (Vidocq)</movieName>
+      <bookedOn>2021-09-08T10:16:22</bookedOn>
+      <bookedSeats>2</bookedSeats>
+      <totalAmount>80</totalAmount>
+    </order>
+  </ns0:GetAllOrdersResponse>
+</body>

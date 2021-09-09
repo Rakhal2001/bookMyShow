@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:bookmyshow="http://www.mulesoft.org/schema/mule/bookmyshow" xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/bookmyshow http://www.mulesoft.org/schema/mule/bookmyshow/current/mule-bookmyshow.xsd">
+	<configuration-properties doc:name="Configuration properties" doc:id="c072942f-85f4-42fd-ab30-b6f5fff08fd3" file="config.yaml" />
+	<wsc:config name="Web_Service_Consumer_Config" doc:name="Web Service Consumer Config" doc:id="92cbbcde-dd21-41e7-bd75-ca6c1612ca51" >
+		<wsc:connection wsdlLocation="${orders.location}" service="OrderService" port="OrderServiceSOAP" address="http://bms-orders-ws.us-e2.cloudhub.io/OrderService/OrderServiceSOAP" >
+			<wsc:custom-transport-configuration >
+				<wsc:default-http-transport-configuration timeout="30000" />
+			</wsc:custom-transport-configuration>
+		</wsc:connection>
+		<expiration-policy maxIdleTime="30" timeUnit="SECONDS" />
+	</wsc:config>
+	<bookmyshow:config name="Bookmyshow_Config" doc:name="Bookmyshow Config" doc:id="920805e6-a4ba-4042-9d3a-68c638fe8f81" property_host="${movies.host}" property_port="${movies.port}" property_protocol="HTTP" />
+	<configuration doc:name="Configuration" doc:id="7f9c20d0-1249-4513-8937-51f5af81cf24" defaultErrorHandler-ref="globalError_Handler" />
+	<error-handler name="globalError_Handler" doc:id="b22d20a0-fd39-4c3a-8495-be7d2e9f2b15" >
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="b79fdb24-89f2-4c26-a35b-a20cb294170c" type="ANY">
+			<set-payload value="An error occured, Contact the Owner" doc:name="Set Payload" doc:id="b08e8242-2a68-4cc1-89fe-20b507df29aa" />
+		</on-error-continue>
+	</error-handler>
+</mule>

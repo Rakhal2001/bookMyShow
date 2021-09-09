@@ -1,0 +1,14 @@
+%dw 2.0
+
+type auto_dd0625a2_e304_4fd5_9862_0ca5715beedd_Output_Payload = {
+  totalAmount: Number, 
+  bookedOn: String, 
+  movieId?: Number, 
+  id?: Number, 
+  movieName: String, 
+  customerName: String, 
+  email: String, 
+  bookedSeats: Number, 
+  _?: Any
+}
+

@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_ded6ab50_ee04_427c_a976_c140b4dbc73d_Output_Payload = Array<{  schedule: String,   availableSeats: Number,   price: Number,   genre: String,   language: String,   id?: Number,   movieDuration: Number,   movieName: String,   totalSeats: Number,   _?: Any}>
+

@@ -1,0 +1,72 @@
+[
+  {
+    "orderId": "1",
+    "customerName": "Abhishek Saseendran",
+    "email": "abhishek@apisero.com",
+    "movieId": "1",
+    "movieName": "Take a Giant Step",
+    "bookedOn": "2021-09-03T03:23:06",
+    "bookedSeats": "3",
+    "totalAmount": "500"
+  },
+  {
+    "orderId": "2",
+    "customerName": "Abhishek",
+    "email": "abhishek2@apisero.com",
+    "movieId": "1",
+    "movieName": "Take a Giant Step",
+    "bookedOn": "2021-09-08T10:01:07",
+    "bookedSeats": "2",
+    "totalAmount": "80"
+  },
+  {
+    "orderId": "3",
+    "customerName": "Abhishek3",
+    "email": "abhishek3@apisero.com",
+    "movieId": "3",
+    "movieName": "Dark Portals: The Chronicles of Vidocq  (Vidocq)",
+    "bookedOn": "2021-09-08T10:08:25",
+    "bookedSeats": "2",
+    "totalAmount": "80"
+  },
+  {
+    "orderId": "4",
+    "customerName": "Abhishek3",
+    "email": "abhishek3@apisero.com",
+    "movieId": "3",
+    "movieName": "Dark Portals: The Chronicles of Vidocq  (Vidocq)",
+    "bookedOn": "2021-09-08T10:11:31",
+    "bookedSeats": "2",
+    "totalAmount": "80"
+  },
+  {
+    "orderId": "5",
+    "customerName": "Abhishek3",
+    "email": "abhishek3@apisero.com",
+    "movieId": "3",
+    "movieName": "Dark Portals: The Chronicles of Vidocq  (Vidocq)",
+    "bookedOn": "2021-09-08T10:12:21",
+    "bookedSeats": "2",
+    "totalAmount": "80"
+  },
+  {
+    "orderId": "6",
+    "customerName": "Abhishek3",
+    "email": "abhishek3@apisero.com",
+    "movieId": "3",
+    "movieName": "Dark Portals: The Chronicles of Vidocq  (Vidocq)",
+    "bookedOn": "2021-09-08T10:15:35",
+    "bookedSeats": "2",
+    "totalAmount": "80"
+  },
+  {
+    "orderId": "7",
+    "customerName": "Abhishek3",
+    "email": "abhishek3@apisero.com",
+    "movieId": "3",
+    "movieName": "Dark Portals: The Chronicles of Vidocq  (Vidocq)",
+    "bookedOn": "2021-09-08T10:16:22",
+    "bookedSeats": "2",
+    "totalAmount": "80"
+  }
+]
