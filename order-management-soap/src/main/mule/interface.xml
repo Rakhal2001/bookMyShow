@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit-soap="http://www.mulesoft.org/schema/mule/apikit-soap" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/apikit-soap http://www.mulesoft.org/schema/mule/apikit-soap/current/mule-apikit-soap.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+    <http:listener-config name="api-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="8081"/>
+    </http:listener-config>
+    <apikit-soap:config httpStatusVarName="httpStatus" name="soapkit-config" port="orderSOAP" service="order" wsdlLocation="order.wsdl"/>
+    <flow name="api-main">
+        <http:listener config-ref="api-httpListenerConfig" path="/order/orderSOAP">
+            <http:response statusCode="#[attributes.additionalTransportData.statusCode default 200]">
+                <http:headers><![CDATA[#[attributes.protocolHeaders default {}]]]></http:headers>
+            </http:response>
+            <http:error-response statusCode="#[attributes.additionalTransportData.statusCode default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[attributes.protocolHeaders default {}]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit-soap:router config-ref="soapkit-config">
+            <apikit-soap:attributes><![CDATA[#[%dw 2.0
+              output application/java
+              ---
+              {
+                  headers: attributes.headers,
+                  method: attributes.method,
+                  queryString: attributes.queryString
+            }]]]></apikit-soap:attributes>
+        </apikit-soap:router>
+    </flow>
+    <flow name="getAllOrders:\soapkit-config">
+		<flow-ref doc:name="Flow Reference" doc:id="6d789b35-c25d-4997-8293-41fd2a08c036" name="AllOrders"/>
+    </flow>
+    <flow name="getOrdersById:\soapkit-config">
+		<flow-ref doc:name="Flow Reference" doc:id="9ecb9630-7a9f-449d-928e-339357beaa7e" name="OrdersById"/>
+    </flow>
+    <flow name="getOrdersByEmail:\soapkit-config">
+		<flow-ref doc:name="Flow Reference" doc:id="51c5b86b-6324-4f29-8f77-d6b0513cd824" name="OrdersByEmail"/>
+    </flow>
+    <flow name="getOrdersByMovie:\soapkit-config">
+		<flow-ref doc:name="Flow Reference" doc:id="adec6166-652d-47ae-a5a2-322ea747f6dd" name="OrdersByMovie"/>
+    </flow>
+    <flow name="addOrder:\soapkit-config">
+		<flow-ref doc:name="Flow Reference" doc:id="08452724-e3e4-4701-9d67-34b2363881ec" name="AddOrder"/>
+    </flow>
+    <flow name="deleteOrder:\soapkit-config">
+		<flow-ref doc:name="Flow Reference" doc:id="d96b6a54-48bc-490b-9d48-dbde9355eec4" name="DeleteOrder"/>
+    </flow>
+</mule>

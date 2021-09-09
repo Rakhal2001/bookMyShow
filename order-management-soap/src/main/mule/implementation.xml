@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<flow name="AllOrders" doc:id="b4136936-87b6-4825-800d-4c62415d4529" >
+		<http:listener doc:name="Listener" doc:id="58ade2f7-8de4-4ff1-a76d-fdb1fd0bf2d0" config-ref="HTTP_Listener_config" path="/allorders"/>
+		<logger level="INFO" doc:name="Logger" doc:id="3cb19fca-061f-42a3-aebf-141a8a8ddc56" message="#[payload]"/>
+		<db:select doc:name="Select" doc:id="98b35af0-f4f7-44df-824a-365b398a7bcf" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM order_management;]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="f51f8b85-f6e8-4930-ac18-3d072cfeb8bf" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+orders:{
+	order:payload
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler>
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="d61535cf-d5ff-42eb-9948-0a4bdd377970" >
+				<set-payload value='#["Error in the All Orders"]' doc:name="Set Payload" doc:id="f04fd18b-e9c8-4076-a554-44ca63766b75" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	<flow name="OrdersById" doc:id="bee324e3-a483-4e48-b35f-ceb129c1ab51" >
+		<http:listener doc:name="Listener" doc:id="ee75932e-18d8-4ff1-83aa-0c6cbec0015d" config-ref="HTTP_Listener_config" path="/orderbyid"/>
+		<logger level="INFO" doc:name="Logger" doc:id="b204173f-7a2b-41da-abb4-fc6379f5b633" message="#[payload]"/>
+		<db:select doc:name="Select" doc:id="c7f93617-22e4-48ec-b3db-d39a64953a61" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * from order_management where orderId = :orderId;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	orderId:payload.body.getOrdersById.id
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="73d4ad2b-4228-442b-9a42-187024b8ee3b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+orders:{
+	order:payload
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="2b1007ce-bbc5-47c3-9c50-75fde1d45913" >
+				<set-payload value='#["Error in Order By Id"]' doc:name="Set Payload" doc:id="ba33b6a4-dbd7-47b4-b472-dbc521bd7512" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	<flow name="OrdersByEmail" doc:id="86f2c45f-6464-4c39-ada2-c86d022ccc8a" >
+		<http:listener doc:name="Listener" doc:id="c5afec22-6c72-4a1d-ba90-28ea8bd73950" config-ref="HTTP_Listener_config" path="/orderbyemail"/>
+		<logger level="INFO" doc:name="Logger" doc:id="02c667c0-36a0-45c6-a62d-98567bb40c6e" message="#[payload]"/>
+		<db:select doc:name="Select" doc:id="cfe261a1-444b-4850-83fa-e94051551131" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT *
+FROM order_management
+WHERE email=:email;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	email:payload.body.getOrdersByEmail.email
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="89756d2b-3e27-4b90-9d2e-0e32a9443827" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+orders:{
+	order:payload
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="54392acf-7447-4b35-b81e-1c179dcef90f" >
+				<set-payload value='#["Error in Order By Email"]' doc:name="Set Payload" doc:id="a2fdea27-8028-4a4f-99b2-ad16960fee8f" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	<flow name="OrdersByMovie" doc:id="1ede061d-f694-451e-8589-1f7ce1198fce" >
+		<http:listener doc:name="Listener" doc:id="ea1a9fab-9654-4cd1-9268-6163979d0f4e" config-ref="HTTP_Listener_config" path="/orderbymovie"/>
+		<logger level="INFO" doc:name="Logger" doc:id="354d35f6-c5f8-4e6e-9f7d-ef4048cccaf4" message="#[payload]"/>
+		<db:select doc:name="Select" doc:id="074a15be-5dcd-48f3-bb3b-b8ed603b00d0" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT *
+FROM order_management
+WHERE movieName LIKE "%":movieName"%";]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	movieName: payload.body.getOrdersByMovie.movie
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="7d806eaf-0d7b-45af-8266-da65a50f5b7b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+orders:{
+	order:payload
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="77712600-728d-47bc-9c6d-cc4eadedc1eb" >
+				<set-payload value='#["Error in Order By Movie"]' doc:name="Set Payload" doc:id="97b34deb-abb8-457d-8c71-7074ba5f78c6" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	<flow name="AddOrder" doc:id="e40b26eb-fff6-47ac-b1dc-6b5128dfb52d" >
+		<http:listener doc:name="Listener" doc:id="a5f07277-a432-46ca-87c0-97cf8f785956" config-ref="HTTP_Listener_config" path="/addorder"/>
+		<logger level="INFO" doc:name="Logger" doc:id="e03525af-a8c8-4ccf-8e21-84fa40a71e97" message="#[payload]"/>
+		<db:insert doc:name="Insert" doc:id="952628ba-4db8-4a21-9142-9c512abb23e2" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO order_management(customerName, email, movieName, bookedSeats, bookedOn, totalAmount)
+VALUES (:customerName,:email,:movieName,:bookedSeats,:bookedOn,:totalAmount);]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	customerName: payload.body.addOrder.customerName,
+	email: payload.body.addOrder.email,
+	movieName: payload.body.addOrder.movieName,
+	bookedSeats: payload.body.addOrder.bookedSeats,
+	bookedOn: payload.body.addOrder.bookedOn,
+	totalAmount: payload.body.addOrder.totalAmount
+}]]]></db:input-parameters>
+		</db:insert>
+		<choice doc:name="Choice" doc:id="b95a8b3f-c292-4e31-a27e-e6906ff010f0" >
+			<when expression="#[payload.affectedRows &gt;= 1]">
+				<ee:transform doc:name="Transform Message" doc:id="15bc82aa-185e-4702-96fa-9fa54a837963">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/xml
+---
+message: "Data added!"]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Transform Message" doc:id="8d35ef1c-c4c9-482b-a2d8-1cbaa5921afe" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+message: "Insertion fail!"]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="c1e9f20f-876b-4d0e-aec1-b51e15db022e" >
+				<set-payload value='#["Error in Add Order"]' doc:name="Set Payload" doc:id="e1fb9567-c7cb-4c50-acba-efd3ef3caa0c" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	<flow name="DeleteOrder" doc:id="71fe248e-b42f-4261-9a37-9859eac3aa4f" >
+		<http:listener doc:name="Listener" doc:id="8d9fbdb5-b712-456d-b0cc-ee52929c58b3" path="/deleteorder" config-ref="HTTP_Listener_config"/>
+		<logger level="INFO" doc:name="Logger" doc:id="26542dee-f807-4cc0-8099-b6332a12bea0" message="#[payload]"/>
+		<db:delete doc:name="Delete" doc:id="bb259fd9-9278-4953-97e1-e4f22f4215b4" config-ref="Database_Config">
+			<db:sql ><![CDATA[delete from order_management where orderId = :id;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	id: payload.body.deleteOrder.id
+}]]]></db:input-parameters>
+		</db:delete>
+		<choice doc:name="Choice" doc:id="986c7471-c457-4eab-b25f-91fde423378a" >
+			<when expression="#[payload==1]">
+				<ee:transform doc:name="Transform Message" doc:id="0f24d858-044b-43be-973e-a4d7fda1399e">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/xml
+---
+message: "Data deleted"]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Transform Message" doc:id="f6b20280-ba07-47d0-8708-7ae6f9323cca" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+message: "Deletion fail!!"]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="964e4579-f9bb-4611-95f4-1440d64e2104" >
+				<set-payload value='#["Error in Delete Order"]' doc:name="Set Payload" doc:id="aa884815-55d9-47db-8a0c-cb55023dcf5b" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+</mule>

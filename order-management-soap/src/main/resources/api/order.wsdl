@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ws="http://www.example.org/order/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="order" targetNamespace="http://www.example.org/order/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://www.example.org/order/">
+      <xsd:element name="getAllOrders">
+        <xsd:complexType>
+          <xsd:sequence>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="getAllOrdersResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+          	<xsd:element name="orderId" type="xsd:int"></xsd:element>
+          	<xsd:element name="customerName" type="xsd:string"></xsd:element>
+          	<xsd:element name="email" type="xsd:string"></xsd:element>
+          	<xsd:element name="movieName" type="xsd:string"></xsd:element>
+          	<xsd:element name="bookedSeats" type="xsd:int"></xsd:element>
+          	<xsd:element name="bookedOn" type="xsd:dateTime"></xsd:element>
+          	<xsd:element name="totalAmounts" type="xsd:int"></xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="getOrdersByEmail">
+      	<xsd:complexType>
+      		<xsd:sequence>
+
+      			<xsd:element name="email" type="xsd:string"></xsd:element>
+      		</xsd:sequence>
+      	</xsd:complexType>
+      </xsd:element>
+      <xsd:element name="getOrdersByEmailResponse">
+      	<xsd:complexType>
+      		<xsd:sequence>
+
+      			<xsd:element name="orderId" type="xsd:int"></xsd:element>
+      			<xsd:element name="customerName" type="xsd:string"></xsd:element>
+      			<xsd:element name="email" type="xsd:string"></xsd:element>
+      			<xsd:element name="movieName" type="xsd:string"></xsd:element>
+      			<xsd:element name="bookedSeats" type="xsd:int"></xsd:element>
+      			<xsd:element name="bookedOn" type="xsd:dateTime"></xsd:element>
+      			<xsd:element name="totalAmounts" type="xsd:int"></xsd:element>
+      		</xsd:sequence>
+      	</xsd:complexType>
+      </xsd:element>
+      <xsd:element name="getOrdersByMovie">
+      	<xsd:complexType>
+      		<xsd:sequence>
+
+      			<xsd:element name="movie" type="xsd:string"></xsd:element>
+      		</xsd:sequence>
+      	</xsd:complexType>
+      </xsd:element>
+      <xsd:element name="getOrdersByMovieResponse">
+      	<xsd:complexType>
+      		<xsd:sequence>
+
+      			<xsd:element name="orderId" type="xsd:int"></xsd:element>
+      			<xsd:element name="customerName" type="xsd:string"></xsd:element>
+      			<xsd:element name="email" type="xsd:string"></xsd:element>
+      			<xsd:element name="movieName" type="xsd:string"></xsd:element>
+      			<xsd:element name="bookedSeats" type="xsd:int"></xsd:element>
+      			<xsd:element name="bookedOn" type="xsd:dateTime"></xsd:element>
+      			<xsd:element name="totalAmounts" type="xsd:int"></xsd:element>
+      		</xsd:sequence>
+      	</xsd:complexType>
+      </xsd:element>
+      <xsd:element name="getOrdersById">
+      	<xsd:complexType>
+      		<xsd:sequence>
+
+      			<xsd:element name="id" type="xsd:int"></xsd:element>
+      		</xsd:sequence>
+      	</xsd:complexType>
+      </xsd:element>
+      <xsd:element name="NewOperationResponse">
+      	<xsd:complexType>
+      		<xsd:sequence>
+
+      			<xsd:element name="out" type="xsd:string"></xsd:element>
+      		</xsd:sequence>
+      	</xsd:complexType>
+      </xsd:element>
+      <xsd:element name="getOrdersByIdResponse1">
+      	<xsd:complexType>
+      		<xsd:sequence>
+
+      			<xsd:element name="orderId" type="xsd:int"></xsd:element>
+      			<xsd:element name="customerName" type="xsd:string"></xsd:element>
+      			<xsd:element name="email" type="xsd:string"></xsd:element>
+      			<xsd:element name="movieName" type="xsd:string"></xsd:element>
+      			<xsd:element name="bookedSeats" type="xsd:int"></xsd:element>
+      			<xsd:element name="bookedOn" type="xsd:dateTime"></xsd:element>
+      			<xsd:element name="totalAmounts" type="xsd:int"></xsd:element>
+      		</xsd:sequence>
+      	</xsd:complexType>
+      </xsd:element>
+      <xsd:element name="add">
+      	<xsd:complexType>
+      		<xsd:sequence>
+
+      			<xsd:element name="in" type="xsd:string"></xsd:element>
+      		</xsd:sequence>
+      	</xsd:complexType>
+      </xsd:element>
+      <xsd:element name="addResponse1">
+      	<xsd:complexType>
+      		<xsd:sequence>
+
+      			<xsd:element name="out" type="xsd:string"></xsd:element>
+      		</xsd:sequence>
+      	</xsd:complexType>
+      </xsd:element>
+      <xsd:element name="addOrder">
+      	<xsd:complexType>
+      		<xsd:sequence>
+
+      			<xsd:element name="customerName" type="xsd:string"></xsd:element>
+      			<xsd:element name="email" type="xsd:string"></xsd:element>
+      			<xsd:element name="movieName" type="xsd:string"></xsd:element>
+      			<xsd:element name="bookedSeats" type="xsd:int"></xsd:element>
+                        <xsd:element name="bookedOn" type="xsd:dateTime"></xsd:element>
+                        <xsd:element name="totalAmounts" type="xsd:int"></xsd:element>
+      		</xsd:sequence>
+      	</xsd:complexType>
+      </xsd:element>
+      <xsd:element name="addOrderResponse1">
+      	<xsd:complexType>
+      		<xsd:sequence>
+
+      			<xsd:element name="status" type="xsd:boolean"></xsd:element>
+      		</xsd:sequence>
+      	</xsd:complexType>
+      </xsd:element>
+      <xsd:element name="deleteOrder">
+      	<xsd:complexType>
+      		<xsd:sequence>
+
+      			<xsd:element name="id" type="xsd:int"></xsd:element>
+      		</xsd:sequence>
+      	</xsd:complexType>
+      </xsd:element>
+      <xsd:element name="deleteOrderResponse1">
+      	<xsd:complexType>
+      		<xsd:sequence>
+
+      			<xsd:element name="status" type="xsd:boolean"></xsd:element>
+      		</xsd:sequence>
+      	</xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="getAllOrdersRequest">
+    <wsdl:part element="ws:getAllOrders" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getAllOrdersResponse">
+    <wsdl:part element="ws:getAllOrdersResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="getOrdersByEmailRequest">
+  	<wsdl:part name="parameters" element="ws:getOrdersByEmail"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getOrdersByEmailResponse">
+  	<wsdl:part name="parameters" element="ws:getOrdersByEmailResponse"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getOrdersByMovieRequest">
+  	<wsdl:part name="parameters" element="ws:getOrdersByMovie"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getOrdersByMovieResponse">
+  	<wsdl:part name="parameters" element="ws:getOrdersByMovieResponse"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getOrdersByIdRequest">
+  	<wsdl:part name="parameters" element="ws:getOrdersById"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="NewOperationResponse">
+  	<wsdl:part name="parameters" element="ws:NewOperationResponse"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getOrdersByIdResponse1">
+  	<wsdl:part name="parameters" element="ws:getOrdersByIdResponse1"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="addRequest">
+  	<wsdl:part name="parameters" element="ws:add"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="addResponse1">
+  	<wsdl:part name="parameters" element="ws:addResponse1"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="addOrderRequest">
+  	<wsdl:part name="parameters" element="ws:addOrder"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="addOrderResponse1">
+  	<wsdl:part name="parameters" element="ws:addOrderResponse1"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="deleteOrderRequest">
+  	<wsdl:part name="parameters" element="ws:deleteOrder"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="deleteOrderResponse1">
+  	<wsdl:part name="parameters" element="ws:deleteOrderResponse1"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="order">
+    <wsdl:operation name="getAllOrders">
+      <wsdl:input message="ws:getAllOrdersRequest"/>
+      <wsdl:output message="ws:getAllOrdersResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="getOrdersByEmail">
+    	<wsdl:input message="ws:getOrdersByEmailRequest"></wsdl:input>
+    	<wsdl:output message="ws:getOrdersByEmailResponse"></wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getOrdersByMovie">
+    	<wsdl:input message="ws:getOrdersByMovieRequest"></wsdl:input>
+    	<wsdl:output message="ws:getOrdersByMovieResponse"></wsdl:output>
+    </wsdl:operation>    <wsdl:operation name="getOrdersById">    	<wsdl:input message="ws:getOrdersByIdRequest"></wsdl:input>    	<wsdl:output message="ws:getOrdersByIdResponse1"></wsdl:output>
+    </wsdl:operation>    <wsdl:operation name="addOrder">    	<wsdl:input message="ws:addOrderRequest"></wsdl:input>    	<wsdl:output message="ws:addOrderResponse1"></wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="deleteOrder">
+    	<wsdl:input message="ws:deleteOrderRequest"></wsdl:input>
+    	<wsdl:output message="ws:deleteOrderResponse1"></wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="orderSOAP" type="ws:order">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="getAllOrders">
+      <soap:operation soapAction="http://www.example.org/order/getAllOrders"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+        <wsdl:operation name="getOrdersById">
+      <soap:operation soapAction="http://www.example.org/order/getOrdersById"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+        <wsdl:operation name="getOrdersByEmail">
+      <soap:operation soapAction="http://www.example.org/order/getOrdersByEmail"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+        <wsdl:operation name="getOrdersByMovie">
+      <soap:operation soapAction="http://www.example.org/order/getOrdersByMovie"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+        <wsdl:operation name="addOrder">
+      <soap:operation soapAction="http://www.example.org/order/addOrder"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+        <wsdl:operation name="deleteOrder">
+      <soap:operation soapAction="http://www.example.org/order/deleteOrder"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="order">
+    <wsdl:port binding="ws:orderSOAP" name="orderSOAP">
+      <soap:address location="http://www.example.org/"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

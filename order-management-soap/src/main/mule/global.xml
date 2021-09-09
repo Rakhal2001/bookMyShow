@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="e620cb22-b6a1-48b3-8de4-820f2b8bf20c" >
+		<http:listener-connection host="0.0.0.0" port="4444" />
+	</http:listener-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="a2091ace-aecd-4c10-a3ac-229ea6f06a79" file="config.yaml" />
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="904d2e97-812d-486f-9eb2-90414951e77c" >
+		<db:my-sql-connection host="${mysql.host}" port="${mysql.port}" user="${mysql.user}" password="${mysql.pass}" database="${mysql.db}" />
+	</db:config>
+	<configuration doc:name="Configuration" doc:id="d39e4528-d6f2-40fd-a0a7-fddecefc71d1" defaultErrorHandler-ref="globalError_Handler" />
+	<error-handler name="globalError_Handler" doc:id="581038bd-80ad-4c42-96f8-fe71b1053b1a" >
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="fd6bf8b5-8bd6-4cc0-94ef-27da1da2c773" >
+			<set-payload value='#["Some thing went wrong " ++ error.description as String]' doc:name="Set Payload" doc:id="42808db4-e8ca-4ded-87bb-72149415dc83" />
+		</on-error-continue>
+	</error-handler>
+</mule>

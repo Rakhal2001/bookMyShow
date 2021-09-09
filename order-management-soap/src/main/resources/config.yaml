@@ -1,0 +1,10 @@
+http:
+  host: "0.0.0.0"
+  port: "4444"
+  
+mysql:
+  host: "sql6.freemysqlhosting.net"
+  user: "sql6435656"
+  pass: "mea3FBiDGy"
+  port: "3306"
+  db: "sql6435656"
