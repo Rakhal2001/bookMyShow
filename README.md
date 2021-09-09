@@ -1,15 +1,13 @@
 # bookMyShow
 ## this is the soap api for the bookmyshow
 
-
-
-======
 [Here is wsld link](http://order-management-soap.us-e2.cloudhub.io/order/orderSOAP?wsdl)
 
-======
+
 ### Endpoints
 
 * Use postman or any other soap api testing application 
+> http://order-management-soap.us-e2.cloudhub.io/order/orderSOAP
 
 #### /getAllOrders
 > inside post body put the below code to test it.
