@@ -1,9 +1,8 @@
 # bookMyShow
-## Im soap api branch
+## this is the soap api for the bookmyshow
 
 
 
-this will contian soap mule files
 ======
 [Here is wsld link](http://order-management-soap.us-e2.cloudhub.io/order/orderSOAP?wsdl)
 
