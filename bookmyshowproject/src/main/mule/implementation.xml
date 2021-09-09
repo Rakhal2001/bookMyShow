@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="postDataToMovieManagement" doc:id="c10eb25e-22f4-4792-ab17-ed6eac768f8c" >
+		<ee:transform doc:name="Transform Message" doc:id="8f85c179-7ec2-4ad5-82b5-ed415590e54a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map(value,index)->{
+    "movieName": value.movieName,
+    "movieDuration": value.movieDuration,
+    "genre": value.genre,
+    "language": value.language,
+    "addedOn": now() as Date,
+    "totalSeats": value.totalSeats,
+    "availableSeats": value.totalSeats,
+    "price": value.price
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<db:bulk-insert doc:name="Bulk insert" doc:id="6bae5ddd-7a24-458c-9bc6-2158d6b91abc" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO `movie_management`(`movieName`, `movieDuration`, `genre`, `language`, `addedOn`, `totalSeats`, `availableSeats`, `price`)
+VALUES (:movieName,:movieDuration,:genre,:language,:addedOn,:totalSeats,:availableSeats,:price)]]></db:sql>
+		</db:bulk-insert>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="b477401c-2662-448d-9907-62e4cc36bb25" type="DB:QUERY_EXECUTION">
+				<ee:transform doc:name="Transform Message" doc:id="e26743cd-ef08-4e8c-87d1-8dfa4432228d" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"errorMessage":"Some movies are already present. So these are not added!"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	<flow name="selectAllMovies" doc:id="77a6dc21-9c05-4bf2-925e-5e9c70749f8e" >
+		<db:select doc:name="Select" doc:id="10fd3172-c747-40ee-9bb0-047fff9fbb4a" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT *
+FROM movie_management;]]></db:sql>
+		</db:select>
+	</flow>
+	<flow name="selectMovieById" doc:id="16b20574-0a8c-4b6f-ba99-20539cdf6798" >
+		<db:select doc:name="Select" doc:id="8f8fc4ad-7a66-40b0-8a3b-524995949f4e" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * 
+FROM movie_management
+WHERE id=:id;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	id: vars.id
+}]]]></db:input-parameters>
+		</db:select>
+	</flow>
+	<flow name="deleteMovie" doc:id="ba5920f6-ba32-4c50-b787-4907e1c46d78" >
+		<db:delete doc:name="Delete" doc:id="dbf776db-64ac-4a4d-82b1-f15c35432cf8" config-ref="Database_Config">
+			<db:sql ><![CDATA[DELETE FROM movie_management
+WHERE id=:id;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	id: vars.id
+}]]]></db:input-parameters>
+		</db:delete>
+	</flow>
+	<flow name="bookSeats" doc:id="66fc0aac-7c19-4861-ac17-b6569130170d" >
+		<db:insert doc:name="Insert" doc:id="435fe241-0e83-4a59-abbc-9ed407a612e1" config-ref="Database_Config">
+			<db:sql ><![CDATA[INSERT INTO `order_management`(`customerName`, `email`, `movieName`, `bookedSeats`, `bookedOn`, `totalAmount`)
+VALUES (:customerName,:email,:movieName,:bookedSeats,:bookedOn,:totalAmount)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[payload]]]></db:input-parameters>
+		</db:insert>
+	</flow>
+	<flow name="updateMovieManagement" doc:id="eb646680-d49c-4091-b194-48ee3688f9c3" >
+		<db:update doc:name="Update" doc:id="f42bd384-cbe7-4bfd-8677-080137fb3ffb" config-ref="Database_Config">
+			<db:sql ><![CDATA[UPDATE `movie_management` 
+SET `availableSeats`=:availableSeats
+WHERE id=:id;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[payload]]]></db:input-parameters>
+		</db:update>
+	</flow>
+	<flow name="selectAllMoviesBasedOnSomeChoice" doc:id="53ad0aa6-e23b-45b0-9e60-9b00fcbf7b17" >
+		<db:select doc:name="Select" doc:id="f7ec4f6f-0077-4afb-9d7d-57607119cef9" config-ref="Database_Config" >
+			<db:sql ><![CDATA[SELECT *
+FROM movie_management
+WHERE movieName=:movieName OR genre=:genre OR language=:language;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	"movieName":attributes.queryParams.name default "",
+	"genre": attributes.queryParams.genre default "",
+	"language": attributes.queryParams.language default ""
+}]]]></db:input-parameters>
+		</db:select>
+	</flow>
+</mule>

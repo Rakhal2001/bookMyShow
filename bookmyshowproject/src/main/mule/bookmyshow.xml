@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd">
+    <http:listener-config name="bookmyshow-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="8081" />
+    </http:listener-config>
+    <apikit:config name="bookmyshow-config" api="resource::abb13321-149d-4544-ba67-d1d1d10bad0e:bookmyshow:1.0.3:raml:zip:bookmyshow.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <wsc:config name="Web_Service_Consumer_Config" doc:name="Web Service Consumer Config" doc:id="94b887b8-a676-42fd-a848-26b54c2f6d10" >
+		<wsc:connection wsdlLocation="http://ordersmanagement.us-e2.cloudhub.io/order/orderSOAP?wsdl" service="order" port="orderSOAP" address="http://ordersmanagement.us-e2.cloudhub.io/order/orderSOAP" />
+	</wsc:config>
+	<flow name="bookmyshow-main">
+        <http:listener config-ref="bookmyshow-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="bookmyshow-config" />
+        <error-handler>
+            <on-error-propagate type="APIKIT:BAD_REQUEST">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Bad request"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">400</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Method not allowed"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">405</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Not acceptable"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">406</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Unsupported media type"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">415</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Not Implemented"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">501</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="bookmyshow-console">
+        <http:listener config-ref="bookmyshow-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="bookmyshow-config" />
+        <error-handler>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="get:\movies:bookmyshow-config">
+        <choice doc:name="Choice" doc:id="f1c7308e-dfa3-412c-be27-60caf9284f2f" >
+			<when expression="#[(attributes.queryParams.name != null) or (attributes.queryParams.genre != null) or (attributes.queryParams.language != null)]">
+				<flow-ref doc:name="Flow Reference" doc:id="1749bcd5-96c3-4e24-b801-ca098add7bdc" name="selectAllMoviesBasedOnSomeChoice"/>
+			</when>
+			<otherwise >
+				<flow-ref doc:name="Flow Reference" doc:id="ae998c39-271c-4abd-b2f5-21771339575d" name="selectAllMovies" />
+			</otherwise>
+		</choice>
+        <validation:is-true doc:name="Is true" doc:id="08f8ef6c-440f-46a5-ad5f-174f0c84bd85" expression="#[sizeOf(payload)&gt;0]" />
+        <ee:transform doc:name="Transform Message" doc:id="dfdb503c-621a-419e-9048-26e77a7b7ef9">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+        <error-handler>
+            <on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="becc1d05-5e4f-4b26-bd46-9aa3f591db44" type="ANY">
+                <ee:transform doc:name="Transform Message" doc:id="cd75529b-56f8-4f0f-bc40-f571be842117">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message":"No records found!"
+}]]></ee:set-payload>
+                    </ee:message>
+                </ee:transform>
+            </on-error-continue>
+        </error-handler>
+    </flow>
+    <flow name="get:\orders:bookmyshow-config">
+		<ee:transform doc:name="Transform Message" doc:id="9bd5f656-3db4-4ee8-9301-9c284df79a70" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+getAllOrders:{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<wsc:consume operation="getAllOrders" doc:name="Consume" doc:id="6575b4ee-9eae-4f77-850d-4eaa3979262e" config-ref="Web_Service_Consumer_Config"/>
+		<validation:is-true doc:name="Is true" doc:id="a2885507-2d14-44bf-8284-42d85f5425b0" expression="#[payload..*order.orderId != null]"/>
+		<ee:transform doc:name="Transform Message" doc:id="bb356f33-a7fb-4b21-a06b-e4bee930975a" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload..*order]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="fc5acbec-f339-46c9-a40e-55a68fe04639" type="ANY">
+				<ee:transform doc:name="Transform Message" doc:id="a2d14b56-a7fc-46ce-a31f-eda34aacf1c6" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"Message":"No data found!"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-continue>
+		</error-handler>
+    </flow>
+    <flow name="get:\movies\(id):bookmyshow-config">
+        <set-variable value="#[attributes.uriParams.id]" doc:name="Set Variable" doc:id="49f0a27c-3763-4bd9-b5ef-e8b95bf202ae" variableName="id" />
+        <flow-ref doc:name="Flow Reference" doc:id="7a00b417-f1bc-43d5-99f9-455fa1c7a0d5" name="selectMovieById" />
+        <validation:is-true doc:name="Is true" doc:id="c7873cb1-63d1-4923-bcb4-a78538420814" expression="#[sizeOf(payload)&gt;0]" />
+        <ee:transform doc:name="Transform Message" doc:id="b4e85958-f187-40d2-9618-c9a6ecaab3e6">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+        <error-handler>
+            <on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="f6ca3383-0f28-4a15-8a83-2cb1822de591" type="VALIDATION:INVALID_BOOLEAN">
+                <ee:transform doc:name="Transform Message" doc:id="2889cf14-16c9-4c8d-b4c4-ff3c678c308e">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"Message":"No movie found for the provided id!"
+}]]></ee:set-payload>
+                    </ee:message>
+                </ee:transform>
+            </on-error-continue>
+        </error-handler>
+    </flow>
+    <flow name="get:\orders\(movieName):bookmyshow-config">
+		<ee:transform doc:name="Transform Message" doc:id="07a57543-baa6-480b-b2d9-d42f09862b28" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+getOrdersByMovie:{
+	movie:attributes.uriParams.movieName
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<wsc:consume operation="getOrdersByMovie" doc:name="Consume" doc:id="cce60285-a727-42ac-8b0e-3a9ab7038d9f" config-ref="Web_Service_Consumer_Config"/>
+		<ee:transform doc:name="Transform Message" doc:id="6e74190e-dd66-408c-9160-25165b269529" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+    </flow>
+    <flow name="get:\orders\(orderId):bookmyshow-config">
+		<ee:transform doc:name="Transform Message" doc:id="4fe7ceee-334e-4598-a399-3881a0681f58" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+---
+getOrdersById:{
+	orderId:attributes.uriParams.orderId
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<wsc:consume operation="getOrdersById" doc:name="Consume" doc:id="33ec104b-3a33-4ac9-a311-15ed9bff6315" config-ref="Web_Service_Consumer_Config"/>
+		<validation:is-true doc:name="Is true" doc:id="d5f1ac0f-346b-4750-a8c6-a3721174f8ae" expression="#[payload..*order.orderId  != null]"/>
+		<ee:transform doc:name="Transform Message" doc:id="9a5332f3-838a-4f9c-860d-be207bb61bcd" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload..*order]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="6af93ed0-8d23-4576-ba76-37258439f1f6" type="ANY">
+				<ee:transform doc:name="Transform Message" doc:id="2bc200b7-762d-41fb-b0f8-79e4d96fe32b" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"Message":"No records found!"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-continue>
+		</error-handler>
+    </flow>
+    <flow name="delete:\movies:bookmyshow-config">
+        <set-variable value="#[attributes.queryParams.id]" doc:name="Set Variable" doc:id="724390d9-739b-46c4-8210-d77e1ea38fc4" variableName="id" />
+        <flow-ref doc:name="Flow Reference" doc:id="a5095799-545c-483a-b521-a17ad6132fbb" name="selectMovieById" />
+        <validation:is-true doc:name="Is true" doc:id="e0469ab1-fc25-43b3-8070-c10c1e7ef600" expression="#[sizeOf(payload)&gt;0]" />
+        <flow-ref doc:name="Flow Reference" doc:id="fb15d129-ae17-415e-b7b7-11a933eb0409" name="deleteMovie" />
+        <ee:transform doc:name="Transform Message" doc:id="bb1f1749-eda8-4a8f-9669-c5846279b45f">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"Message":"movie deleted"
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+        <error-handler>
+            <on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="112bfe71-b480-4876-9322-55621ce833f9" type="VALIDATION:INVALID_BOOLEAN">
+                <ee:transform doc:name="Transform Message" doc:id="0a02c8fe-ea55-4d7b-b6b9-18f6b67a4c1e">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"Message":"No movie found for the provided id!"
+}]]></ee:set-payload>
+                    </ee:message>
+                </ee:transform>
+            </on-error-continue>
+        </error-handler>
+    </flow>
+    <flow name="post:\movies:application\json:bookmyshow-config">
+        <flow-ref doc:name="Flow Reference" doc:id="dfa718b1-b483-4cab-8286-e2289e810731" name="postDataToMovieManagement" />
+        <ee:transform doc:name="Transform Message" doc:id="6abafb8e-c479-4eae-aaa3-3532b75cdef0">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"Message": "Data Added Successfully!. " ++ (payload.errorMessage default "") as String
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+    </flow>
+    <flow name="post:\book\(id)\(seats):application\json:bookmyshow-config">
+		<set-variable value="#[attributes.uriParams.id]" doc:name="Set Variable" doc:id="39fa5d21-dbdf-463f-bb85-c8d722f408bb" variableName="id"/>
+		<set-variable value="#[attributes.uriParams.seats]" doc:name="Set Variable" doc:id="d7f1a564-775b-41e5-b3aa-7a6364ef6a74" variableName="seats"/>
+		<flow-ref doc:name="Flow Reference" doc:id="ddcd01f2-71b9-4883-b0b7-50ded81a2552" name="selectMovieById" target="target"/>
+		<validation:is-true doc:name="Is true" doc:id="059136ef-5b80-486a-8024-8850505115fa" expression="#[sizeOf(vars.target)&gt;0]"/>
+		<validation:is-true doc:name="Is true" doc:id="9ab1e58f-c1b7-4740-b4a7-98706317bcb0" expression="#[vars.target.availableSeats[0]&gt;attributes.uriParams.seats]">
+			<error-mapping sourceType="VALIDATION:INVALID_BOOLEAN" targetType="SEATS:NOT_AVAILABLE" />
+		</validation:is-true>
+		<ee:transform doc:name="Transform Message" doc:id="0d29505f-0b04-4658-8282-44846e2c7cda" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://www.example.org/order/
+ns soap http://schemas.xmlsoap.org/soap/envelope/
+---
+addOrder:{
+	customerName: attributes.queryParams.cname,
+	email: attributes.queryParams.email,
+	movieName: vars.target.movieName[0],
+	bookedSeats: attributes.uriParams.seats,
+	bookedOn: (now() as String {format:"yyyy-MM-dd hh:mm:ss"}),
+	totalAmount: (vars.target.price[0] as Number)*(attributes.uriParams.seats as Number)
+}
+]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="customerInfo" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+ customerName:attributes.queryParams.cname,
+ email: attributes.queryParams.email
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<wsc:consume operation="addOrder" doc:name="Consume" doc:id="f04f4981-20d3-45b7-823d-5b278654bc32" config-ref="Web_Service_Consumer_Config"/>
+		<ee:transform doc:name="Transform Message" doc:id="aa0a3890-f393-4f92-a3f2-e47129767a2d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"id":vars.target.id[0],
+	"availableSeats":(vars.target.availableSeats[0] as Number) - (vars.seats as Number)
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<flow-ref doc:name="Flow Reference" doc:id="303f6f61-3117-4e13-92bd-5582f4fd01ff" name="updateMovieManagement"/>
+		<ee:transform doc:name="Transform Message" doc:id="7c4d4ed3-647b-4315-a659-d48815f0084f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"Message": "Order Placed Successfully!",
+	"customerName": vars.customerInfo.customerName,
+	"email": vars.customerInfo.email,
+	"movieName": vars.target.movieName[0],
+	"SeatsBooked": vars.seats,
+	"totalAmount": (vars.target.price[0] as Number)*(vars.seats as Number)
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="543dff9d-5159-44cc-8d2f-399757a460ba" type="SEATS:NOT_AVAILABLE">
+				<ee:transform doc:name="Transform Message" doc:id="7747e07e-3d14-4442-b740-30425c7c557d" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"Message":"Required Seats are not available!"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-continue>
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="47c93e5b-87a5-455b-b019-211758d8db89" type="ANY">
+				<ee:transform doc:name="Transform Message" doc:id="8eaaa639-4d98-4048-aa99-29ab82614e16" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"Message":"There is some issues while booking. Please Try Later!"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-continue>
+		</error-handler>
+    </flow>
+</mule>
