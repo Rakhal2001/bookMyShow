@@ -1,18 +1,15 @@
-# bookMyShow
-## Im soap api branch
+# BookMyShow
+## this is the soap api for the bookmyshow
 
-
-
-this will contian soap mule files
-======
 [Here is wsld link](http://order-management-soap.us-e2.cloudhub.io/order/orderSOAP?wsdl)
 
-======
+
 ### Endpoints
 
-⋅⋅* Use postman or any other soap api testing application 
+* Use postman or any other soap api testing application 
+> http://order-management-soap.us-e2.cloudhub.io/order/orderSOAP
 
-1. /getAllOrders
+#### /getAllOrders
 > inside post body put the below code to test it.
 
 ```
@@ -24,7 +21,7 @@ this will contian soap mule files
 </soap:Envelope>
 ```
 
-2. /getOrdersById
+#### /getOrdersById
 > inside post body put the below code to test it.
 
 ```
@@ -38,7 +35,7 @@ this will contian soap mule files
 </soap:Envelope>
 ```
 
-3. /getOrdersByEmail
+#### /getOrdersByEmail
 > inside post body put the below code to test it.
 
 ```
@@ -52,7 +49,7 @@ this will contian soap mule files
 </soap:Envelope>
 ```
 
-4. /getOrdersByMovie
+#### /getOrdersByMovie
 > inside post body put the below code to test it.
 
 ```
@@ -66,8 +63,9 @@ this will contian soap mule files
 </soap:Envelope>
 ```
 
-5. /deleteOrder
-
+#### /deleteOrder
+> inside post body put the below code to test it.
+> 
 ```
 <?xml version="1.0" encoding="utf-8"?>
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
@@ -79,7 +77,7 @@ this will contian soap mule files
 </soap:Envelope>
 ```
 
-5. /addOrder
+#### /addOrder
 > inside post body put the below code to test it.
 
 ```
