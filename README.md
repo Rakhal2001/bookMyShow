@@ -1,8 +1,9 @@
 # BookMyShow
 ## this is the soap api for the bookmyshow
+**@author: Gagan**
 
-[Here is wsld link](http://order-management-soap.us-e2.cloudhub.io/order/orderSOAP?wsdl)
-
+[WSDL link](http://order-management-soap.us-e2.cloudhub.io/order/orderSOAP?wsdl)  
+http://order-management-soap.us-e2.cloudhub.io/order/orderSOAP?wsdl
 
 ### Endpoints
 
